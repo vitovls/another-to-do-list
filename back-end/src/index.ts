@@ -1,5 +1,8 @@
-import App from './app';
+import taskRouter from "./api/routes/Task.routes";
+import App from "./app";
 
-const app = new App();
+const server = new App();
 
-app.start();
+server.addRouter(taskRouter.router);
+
+server.start();
