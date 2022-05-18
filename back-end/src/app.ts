@@ -1,4 +1,5 @@
 import express from 'express';
+import connectToDatabase from './database/connection';
 
 require('dotenv').config();
 
@@ -13,8 +14,9 @@ export default class App {
   }
 
   start() {
+    connectToDatabase();
     this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`);
+      console.log(`App listening on the port ${this.port}...`);
     });
   }
 }
