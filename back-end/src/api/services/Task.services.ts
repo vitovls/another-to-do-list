@@ -1,6 +1,6 @@
 import Service, { ServicesError } from ".";
-import TaskSchema, { Task } from "../interfaces/Task";
-import TaskModel from "../models/Task.model";
+import TaskSchema, { Task } from "../../database/interfaces/Task";
+import TaskModel from "../../database/models/Task.model";
 
 export default class TaskService extends Service<Task> {
   constructor(model = new TaskModel()) {
