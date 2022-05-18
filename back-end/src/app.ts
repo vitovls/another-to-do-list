@@ -10,6 +10,7 @@ export default class App {
 
   constructor(port = Number(process.env.PORT) || 3000) {
     this.app = express();
+    this.app.use(express.json());
     this.port = port;
   }
 
@@ -19,4 +20,9 @@ export default class App {
       console.log(`App listening on the port ${this.port}...`);
     });
   }
+
+  addRouter(router: express.Router) {
+    this.app.use(router);
+  }
+
 }
