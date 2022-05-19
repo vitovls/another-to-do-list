@@ -28,4 +28,20 @@ export default abstract class Service<T> {
     return this.model.delete(id);
   }
 
+  public async findByFilter (query: string): Promise<T[] | ServicesError> {
+    if(query === 'createdAt') {
+      return this.model.findByCreatedAt();
+    }
+    if(query === 'name') {
+      return this.model.findByName();
+    }
+    if(query === 'status') {
+      return this.model.findByStatus();
+    }
+    return this.model.findAll();
+  }
+
+  public async deleteAll (): Promise<string | ServicesError> {
+    return this.model.deleteAll();
+  }
 }
