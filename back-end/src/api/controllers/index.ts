@@ -11,6 +11,11 @@ export interface RequestWithBody<T> extends Request {
   body: T;
 }
 
+export interface RequestWithQuery extends Request {
+  query: {
+    [key: string]: string;
+  };
+}
 export default abstract class Controller<T> {
   abstract route: string;
 
@@ -41,6 +46,14 @@ export default abstract class Controller<T> {
 
   abstract delete(
     req: Request, res: Response<T | ResponseError>
+  ): Promise<typeof res>;
+
+  abstract findByQuery(
+    req: RequestWithQuery, res: Response<T[] | ResponseError>
+  ): Promise<typeof res>;
+
+  abstract deleteAll(
+    req: RequestWithQuery, res: Response<String | ResponseError>
   ): Promise<typeof res>;
 
 }
