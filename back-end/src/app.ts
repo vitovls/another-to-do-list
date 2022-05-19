@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors'
 import connectToDatabase from './database/connection';
 
 require('dotenv').config();
@@ -12,6 +13,7 @@ export default class App {
     this.app = express();
     this.app.use(express.json());
     this.port = port;
+    this.app.use(cors());
   }
 
   start() {
