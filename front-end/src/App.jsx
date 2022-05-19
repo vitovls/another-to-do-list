@@ -1,12 +1,29 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import ModalExclude from './Components/Modals/ModalExclude';
 import './App.css';
-import EmptyFields from './Components/Modals/ModalEmptyFields';
+import Modal from './Components/Modals';
 
 function App() {
   const BASE_URL = process.env.REACT_APP_URL_BASE;
+
+  const closedModal = {
+    isOpen: false,
+    modal: {
+      title: '',
+      message: '',
+      buttons: [],
+    },
+  };
+
+  const formatDate = (date) => `${moment(date).format('DD/MM/YYYY')} às ${moment(date).format('HH:mm')}`;
+
+  const tableBodyClass = (idx) => {
+    if (idx % 2 === 0) {
+      return 'table-body-row table-body-row-even';
+    }
+    return 'table-body-row table-body-row-odd';
+  };
 
   const [task, setTask] = useState({
     name: '',
@@ -17,12 +34,9 @@ function App() {
 
   const [filter, setFilter] = useState('');
 
-  const [modal, setModal] = useState({
-    isOpen: false,
-    modalName: '',
-  });
+  const [modal, setModal] = useState(closedModal);
 
-  const functionSetterTask = (event) => {
+  const functionSetterTaskState = (event) => {
     const { name, value } = event.target;
 
     setTask({
@@ -31,71 +45,77 @@ function App() {
     });
   };
 
-  const dateNow = (date) => `${moment(date).format('DD/MM/YYYY')} às ${moment(date).format('HH:mm')}`;
-
-  const removeTask = async (id) => {
-    await axios.delete(`${BASE_URL}/${id}`);
-    setListTask(listTask.filter((taskElement) => taskElement.id !== id));
+  const removeTask = (id) => {
+    axios.delete(`${BASE_URL}/${id}`).then((response) => {
+      setListTask(listTask.filter((taskElement) => taskElement.id !== id));
+    });
   };
 
-  const actionsEmptyFields = {
-    closeModal: () => setModal({
-      isOpen: false,
-      modalName: '',
-    }),
+  const ModalConfirmExcludeAllTask = {
+    title: 'Cuidado',
+    message: 'Você tem certeza que deseja excluir todas as tarefa?',
+    buttons: [
+      {
+        text: 'Sim',
+        onClick: () => {
+          axios.delete(`${BASE_URL}/delete/?deleteAll=yes`).then((_response) => {
+            setListTask([]);
+            setModal(closedModal);
+          }).catch((error) => {
+            console.log(error);
+          });
+        },
+      },
+      {
+        text: 'Não',
+        onClick: () => setModal(closedModal),
+      },
+    ],
   };
 
-  const postTaskInServer = async () => {
+  const excludeAllTask = () => {
+    setModal({
+      isOpen: true,
+      modalName: <Modal modalOptions={ModalConfirmExcludeAllTask} />,
+    });
+  };
+
+  const ModalEmptyFields = {
+    title: 'Campos Vazios',
+    message: 'Por favor, preencha todos os campos.',
+    buttons: [{
+      text: 'Fechar',
+      onClick: () => setModal(closedModal),
+    }],
+  };
+
+  const postTaskInServer = () => {
     if (task.name === '' || task.status === '') {
       setModal({
         isOpen: true,
-        modalName: <EmptyFields actions={actionsEmptyFields} />,
+        modalName: <Modal modalOptions={ModalEmptyFields} />,
       });
       return;
     }
 
-    const response = await axios.post(`${BASE_URL}`, task);
-
-    setListTask([...listTask, response.data]);
+    axios.post(`${BASE_URL}`, task).then((response) => {
+      setListTask([...listTask, response.data]);
+    });
     setTask({
       name: '',
       status: '',
     });
   };
 
-  const tableBodyClass = (idx) => {
-    if (idx % 2 === 0) {
-      return 'table-body-row table-body-row-even';
-    }
-
-    return 'table-body-row table-body-row-odd';
-  };
-
-  const filterByDate = () => {
-    axios.get(`${BASE_URL}/filter/?filter=createdAt`).then((response) => {
+  const getByFilter = () => {
+    axios.get(`${BASE_URL}/filter/?filter=${filter}`).then((response) => {
       setListTask(response.data);
     }).catch((error) => {
       console.log(error);
     });
   };
 
-  const filterByStatus = () => {
-    axios.get(`${BASE_URL}/filter/?filter=status`).then((response) => {
-      setListTask(response.data);
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-
-  const filterByName = () => {
-    axios.get(`${BASE_URL}/filter/?filter=name`).then((response) => {
-      setListTask(response.data);
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-
-  const noFilter = () => {
+  const getNoFilter = () => {
     axios.get(`${BASE_URL}/filter/?filter=`).then((response) => {
       setListTask(response.data);
     });
@@ -108,21 +128,6 @@ function App() {
     return setFilter(selectFilter);
   };
 
-  useEffect(() => {
-    if (filter === 'status') {
-      filterByStatus();
-    }
-    if (filter === 'name') {
-      filterByName();
-    }
-    if (filter === 'createdAt') {
-      filterByDate();
-    }
-    if (filter === '') {
-      noFilter();
-    }
-  }, [filter, listTask]);
-
   const filterActivated = (e) => {
     if (e === filter) {
       return 'filter-active';
@@ -130,41 +135,26 @@ function App() {
     return '';
   };
 
-  const actionsModalExclude = {
-    closeModal: () => {
-      setModal({
-        isOpen: false,
-        modalName: '',
-      });
-    },
-    confirmExclude: async () => {
-      await axios.delete(`${BASE_URL}/delete/?deleteAll=yes`);
-      setListTask([]);
-      setModal({
-        isOpen: false,
-        modalName: '',
-      });
-    },
-  };
-
-  const excludeAllTask = () => {
-    setModal({
-      isOpen: true,
-      modalName: <ModalExclude actions={actionsModalExclude} />,
-    });
-  };
+  useEffect(() => {
+    if (filter) {
+      getByFilter();
+    }
+    if (filter === '') {
+      getNoFilter();
+    }
+  }, [filter, listTask]);
 
   return (
     <main className="App main-app">
-      { modal.isOpen && (
+      {modal.isOpen && (
         modal.modalName
-      ) }
+      )}
       <h1 className="headling-app">
         Another To Do List
       </h1>
       <header className="header-app">
-        <input className="input-header-app" name="name" onChange={functionSetterTask} type="text" placeholder="Nova Tarefa" />
-        <select className="select-header-app" name="status" onChange={functionSetterTask}>
+        <input value={task.name} className="input-header-app" name="name" onChange={functionSetterTaskState} type="text" placeholder="Nova Tarefa" />
+        <select value={task.status} className="select-header-app" name="status" onChange={functionSetterTaskState}>
           <option value="">Status da Tarefa</option>
           <option value="A Fazer">A Fazer</option>
           <option value="Feito">Feito</option>
@@ -187,7 +177,7 @@ function App() {
             <tr className={tableBodyClass(idx)} key={`Tarefa ${taskElement._id}`}>
               <td>{taskElement.name}</td>
               <td>{taskElement.status}</td>
-              <td>{dateNow(taskElement.createdAt)}</td>
+              <td>{formatDate(taskElement.createdAt)}</td>
               <td>
                 <button className="table-btn-remove-task-app" onClick={() => removeTask(taskElement._id)} type="button"> X </button>
               </td>
