@@ -92,6 +92,10 @@
   cursor: pointer;
 }
 
+.table-header-app-exclude-all:hover {
+  background-color: #d6423a;
+}
+
 .filter-active {
   background-color: #f0a795;
   transition: all 1s;

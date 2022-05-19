@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import ModalExclude from './Components/ModalExclude';
 
 function App() {
   const BASE_URL = process.env.REACT_APP_URL_BASE;
@@ -14,6 +15,11 @@ function App() {
   const [listTask, setListTask] = useState([]);
 
   const [filter, setFilter] = useState('');
+
+  const [modal, setModal] = useState({
+    isOpen: false,
+    modalName: '',
+  });
 
   const functionSetterTask = (event) => {
     const { name, value } = event.target;
@@ -113,8 +119,35 @@ function App() {
     return '';
   };
 
+  const excludeAllTask = () => {
+    setModal({
+      isOpen: true,
+      modalName: 'excludeAllTask',
+    });
+  };
+
+  const actionsModalExclude = {
+    closeModal: () => {
+      setModal({
+        isOpen: false,
+        modalName: '',
+      });
+    },
+    confirmExclude: async () => {
+      await axios.delete(`${BASE_URL}/delete/?deleteAll=yes`);
+      setListTask([]);
+      setModal({
+        isOpen: false,
+        modalName: '',
+      });
+    },
+  };
+
   return (
     <main className="App main-app">
+      { modal.isOpen && (
+      <ModalExclude actions={actionsModalExclude} />
+      ) }
       <h1 className="headling-app">
         Another To Do List
       </h1>
@@ -135,7 +168,7 @@ function App() {
             <th value="name" className={`table-header-app ${filterActivated('name')}`} onClick={() => changeFilter('name')}>Nome</th>
             <th value="status" className={`table-header-app ${filterActivated('status')}`} onClick={() => changeFilter('status')}>Status</th>
             <th className={`table-header-app ${filterActivated('createdAt')}`} onClick={() => changeFilter('createdAt')}>Data de Criação</th>
-            <th className="table-header-app"> </th>
+            <th onClick={() => excludeAllTask()} className="table-header-app table-header-app-exclude-all"> Excluir Todas Tarefas </th>
           </tr>
         </thead>
         <tbody>
