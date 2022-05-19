@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
@@ -20,6 +21,8 @@ function App() {
       [name]: value,
     });
   };
+
+  const dateNow = (date) => `${moment(date).format('DD/MM/YYYY')} às ${moment(date).format('HH:mm')}`;
 
   const removeTask = async (id) => {
     await axios.delete(`${BASE_URL}/${id}`);
@@ -68,6 +71,7 @@ function App() {
           <tr>
             <th>Nome</th>
             <th>Status</th>
+            <th>Data de Criação</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +79,7 @@ function App() {
             <tr key={`Tarefa ${taskElement._id}`}>
               <td>{taskElement.name}</td>
               <td>{taskElement.status}</td>
+              <td>{dateNow(taskElement.createdAt)}</td>
               <td>
                 <button onClick={() => removeTask(taskElement._id)} type="button"> X </button>
               </td>
