@@ -1,8 +1,8 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import ModalExclude from './Components/ModalExcludes';
 import './App.css';
-import ModalExclude from './Components/ModalExclude';
 
 function App() {
   const BASE_URL = process.env.REACT_APP_URL_BASE;
