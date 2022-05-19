@@ -13,6 +13,8 @@ function App() {
 
   const [listTask, setListTask] = useState([]);
 
+  const [filter, setFilter] = useState('');
+
   const functionSetterTask = (event) => {
     const { name, value } = event.target;
 
@@ -44,11 +46,57 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    axios.get(BASE_URL).then((response) => {
+  const filterByDate = () => {
+    axios.get(`${BASE_URL}/filter/?filter=createdAt`).then((response) => {
+      setListTask(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const filterByStatus = () => {
+    axios.get(`${BASE_URL}/filter/?filter=status`).then((response) => {
+      setListTask(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const filterByName = () => {
+    axios.get(`${BASE_URL}/filter/?filter=name`).then((response) => {
+      setListTask(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const noFilter = () => {
+    axios.get(`${BASE_URL}/filter/?filter=`).then((response) => {
       setListTask(response.data);
     });
-  }, [listTask]);
+  };
+
+  const changeFilter = (selectFilter) => {
+    if (selectFilter === filter) {
+      return setFilter('');
+    }
+    return setFilter(selectFilter);
+  };
+
+  useEffect(() => {
+    if (filter === 'status') {
+      filterByStatus();
+    }
+    if (filter === 'name') {
+      filterByName();
+    }
+    if (filter === 'createdAt') {
+      filterByDate();
+    }
+    if (filter === '') {
+      noFilter();
+    }
+  }, [filter, listTask]);
 
   return (
     <main className="App">
@@ -69,9 +117,9 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>Status</th>
-            <th>Data de Criação</th>
+            <th onClick={() => changeFilter('name')}>Nome</th>
+            <th onClick={() => changeFilter('status')}>Status</th>
+            <th onClick={() => changeFilter('createdAt')}>Data de Criação</th>
           </tr>
         </thead>
         <tbody>
