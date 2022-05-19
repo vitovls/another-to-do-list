@@ -1,8 +1,9 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import ModalExclude from './Components/ModalExcludes';
+import ModalExclude from './Components/Modals/ModalExclude';
 import './App.css';
+import EmptyFields from './Components/Modals/ModalEmptyFields';
 
 function App() {
   const BASE_URL = process.env.REACT_APP_URL_BASE;
@@ -37,9 +38,19 @@ function App() {
     setListTask(listTask.filter((taskElement) => taskElement.id !== id));
   };
 
+  const actionsEmptyFields = {
+    closeModal: () => setModal({
+      isOpen: false,
+      modalName: '',
+    }),
+  };
+
   const postTaskInServer = async () => {
     if (task.name === '' || task.status === '') {
-      alert('Preencha todos os campos');
+      setModal({
+        isOpen: true,
+        modalName: <EmptyFields actions={actionsEmptyFields} />,
+      });
       return;
     }
 
@@ -119,13 +130,6 @@ function App() {
     return '';
   };
 
-  const excludeAllTask = () => {
-    setModal({
-      isOpen: true,
-      modalName: 'excludeAllTask',
-    });
-  };
-
   const actionsModalExclude = {
     closeModal: () => {
       setModal({
@@ -143,10 +147,17 @@ function App() {
     },
   };
 
+  const excludeAllTask = () => {
+    setModal({
+      isOpen: true,
+      modalName: <ModalExclude actions={actionsModalExclude} />,
+    });
+  };
+
   return (
     <main className="App main-app">
       { modal.isOpen && (
-      <ModalExclude actions={actionsModalExclude} />
+        modal.modalName
       ) }
       <h1 className="headling-app">
         Another To Do List
