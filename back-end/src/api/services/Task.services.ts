@@ -36,5 +36,18 @@ export default class TaskService extends Service<Task> {
   delete = async (id: string): Promise<Task | null | ServicesError> => {
     return this.model.delete(id);
   }
-    
+
+  findByFilter = async (query: string): Promise<Task[] | ServicesError> => {
+    if (query === 'createdAt') {
+      return this.model.findByCreatedAt();
+    }
+    if (query === 'name') {
+      return this.model.findByName();
+    }
+    if (query === 'status') {
+      return this.model.findByStatus();
+    }
+    return this.model.findAll();
+  }
+  
 }
