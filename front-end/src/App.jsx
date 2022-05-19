@@ -21,6 +21,11 @@ function App() {
     });
   };
 
+  const removeTask = async (id) => {
+    await axios.delete(`${BASE_URL}/${id}`);
+    setListTask(listTask.filter((taskElement) => taskElement.id !== id));
+  };
+
   useEffect(() => {
     axios.get(BASE_URL).then((response) => {
       setListTask(response.data);
@@ -55,6 +60,9 @@ function App() {
             <tr key={taskElement._id}>
               <td>{taskElement.name}</td>
               <td>{taskElement.status}</td>
+              <td>
+                <button onClick={() => removeTask(taskElement._id)} type="button"> X </button>
+              </td>
             </tr>
           ))}
         </tbody>
