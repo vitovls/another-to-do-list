@@ -46,6 +46,14 @@ function App() {
     });
   };
 
+  const tableBodyClass = (idx) => {
+    if (idx % 2 === 0) {
+      return 'table-body-row table-body-row-even';
+    }
+
+    return 'table-body-row table-body-row-odd';
+  };
+
   const filterByDate = () => {
     axios.get(`${BASE_URL}/filter/?filter=createdAt`).then((response) => {
       setListTask(response.data);
@@ -98,38 +106,46 @@ function App() {
     }
   }, [filter, listTask]);
 
+  const filterActivated = (e) => {
+    if (e === filter) {
+      return 'filter-active';
+    }
+    return '';
+  };
+
   return (
-    <main className="App">
-      <h1>
+    <main className="App main-app">
+      <h1 className="headling-app">
         Another To Do List
       </h1>
-      <header>
-        <input name="name" onChange={functionSetterTask} type="text" placeholder="Nova Tarefa" />
-        <select name="status" onChange={functionSetterTask}>
+      <header className="header-app">
+        <input className="input-header-app" name="name" onChange={functionSetterTask} type="text" placeholder="Nova Tarefa" />
+        <select className="select-header-app" name="status" onChange={functionSetterTask}>
           <option value="">Status da Tarefa</option>
           <option value="A Fazer">A Fazer</option>
           <option value="Feito">Feito</option>
           <option value="Cancelado">Cancelado</option>
           <option value="Em Andamento">Em Andamento</option>
         </select>
-        <button onClick={() => postTaskInServer()} type="button">Adicionar</button>
+        <button className="btn-header-app" onClick={() => postTaskInServer()} type="button">Adicionar</button>
       </header>
-      <table>
+      <table className="table-app">
         <thead>
           <tr>
-            <th onClick={() => changeFilter('name')}>Nome</th>
-            <th onClick={() => changeFilter('status')}>Status</th>
-            <th onClick={() => changeFilter('createdAt')}>Data de Criação</th>
+            <th value="name" className={`table-header-app ${filterActivated('name')}`} onClick={() => changeFilter('name')}>Nome</th>
+            <th value="status" className={`table-header-app ${filterActivated('status')}`} onClick={() => changeFilter('status')}>Status</th>
+            <th className={`table-header-app ${filterActivated('createdAt')}`} onClick={() => changeFilter('createdAt')}>Data de Criação</th>
+            <th className="table-header-app"> </th>
           </tr>
         </thead>
         <tbody>
-          {listTask.map((taskElement) => (
-            <tr key={`Tarefa ${taskElement._id}`}>
+          {listTask.map((taskElement, idx) => (
+            <tr className={tableBodyClass(idx)} key={`Tarefa ${taskElement._id}`}>
               <td>{taskElement.name}</td>
               <td>{taskElement.status}</td>
               <td>{dateNow(taskElement.createdAt)}</td>
               <td>
-                <button onClick={() => removeTask(taskElement._id)} type="button"> X </button>
+                <button className="table-btn-remove-task-app" onClick={() => removeTask(taskElement._id)} type="button"> X </button>
               </td>
             </tr>
           ))}

@@ -1,0 +1,133 @@
+.main-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.headling-app {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #ee6c4d;
+}
+
+.header-app {
+  padding: 15px;
+}
+
+.input-header-app {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #14213d;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ee6c4d;
+}
+
+.input-header-app:focus {
+  outline: none;
+  border: 1px solid #4df275;
+}
+
+.select-header-app {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  color: #ee6c4d;
+  margin: 15px;
+  font-weight: 700;
+}
+
+.select-header-app:focus {
+  outline: none;
+  border: 1px solid #4df275;
+}
+
+.btn-header-app {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #ee6c4d;
+  padding: 0 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ee6c4d;
+  margin: 15px;
+}
+
+.btn-header-app:focus {
+  outline: none;
+  border: 1px solid #4df275;
+}
+
+.btn-header-app:hover {
+  border: 1px solid #257338;
+  background-color: #ee6c4d;
+  color: #14213d;
+  transition: all 1s;
+}
+
+.table-app {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 15px;
+}
+
+.table-header-app {
+  background-color: #ee6c4d;
+  color: #e0fbfc;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.filter-active {
+  background-color: #f0a795;
+  transition: all 1s;
+}
+
+.table-body-row {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
+  margin: 15px;
+}
+
+.table-body-row-even {
+  color: #e0fbfc;
+}
+
+.table-body-row-odd {
+  background-color: #ee6c4d;
+  color: #e0fbfc;
+}
+
+.table-btn-remove-task-app {
+  width: 50%;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #ee6c4d;
+  padding: 0 5px;
+  font-weight: bold;
+  color: #ee6c4d;
+  margin: 5px;
+}
+
+.table-btn-remove-task-app:hover {
+  background-color: #d6423a;
+  color: #e0fbfc;
+  transition: all 1s;
+  border: 1px solid #d6423a;
+}
