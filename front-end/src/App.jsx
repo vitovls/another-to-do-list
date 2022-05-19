@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const BASE_URL = process.env.REACT_APP_URL_BASE;
+
   const [task, setTask] = useState({
     name: '',
     status: '',
@@ -17,6 +20,12 @@ function App() {
       [name]: value,
     });
   };
+
+  useEffect(() => {
+    axios.get(BASE_URL).then((response) => {
+      setListTask(response.data);
+    });
+  }, [listTask]);
 
   return (
     <main className="App">
@@ -34,6 +43,22 @@ function App() {
         </select>
         <button type="button">Adicionar</button>
       </header>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {listTask.map((taskElement) => (
+            <tr key={taskElement._id}>
+              <td>{taskElement.name}</td>
+              <td>{taskElement.status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 }
