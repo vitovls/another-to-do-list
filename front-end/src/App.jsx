@@ -26,6 +26,21 @@ function App() {
     setListTask(listTask.filter((taskElement) => taskElement.id !== id));
   };
 
+  const postTaskInServer = async () => {
+    if (task.name === '' || task.status === '') {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    const response = await axios.post(`${BASE_URL}`, task);
+
+    setListTask([...listTask, response.data]);
+    setTask({
+      name: '',
+      status: '',
+    });
+  };
+
   useEffect(() => {
     axios.get(BASE_URL).then((response) => {
       setListTask(response.data);
@@ -46,7 +61,7 @@ function App() {
           <option value="Cancelado">Cancelado</option>
           <option value="Em Andamento">Em Andamento</option>
         </select>
-        <button type="button">Adicionar</button>
+        <button onClick={() => postTaskInServer()} type="button">Adicionar</button>
       </header>
       <table>
         <thead>
@@ -57,7 +72,7 @@ function App() {
         </thead>
         <tbody>
           {listTask.map((taskElement) => (
-            <tr key={taskElement._id}>
+            <tr key={`Tarefa ${taskElement._id}`}>
               <td>{taskElement.name}</td>
               <td>{taskElement.status}</td>
               <td>
