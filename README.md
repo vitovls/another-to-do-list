@@ -1,2 +1,4 @@
 # Another To Do List 📝
-Projeto feito para simulação de Desafio Técnico
+Projeto de lista de tarefas
+
+Em andamento ainda
